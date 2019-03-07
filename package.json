@@ -1,0 +1,30 @@
+{
+  "name": "mooc_node-mod10_quiz_mvc_server",
+  "version": "1.0.0",
+  "description": "mooc_node-mod10_quiz_mvc_server",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "checks": "node tests/launcher.js",
+    "zip": "node tests/compress.js mooc_node-mod10_quiz_mvc_server"
+  },
+  "private": true,
+  "keywords": [
+    "CORE",
+    "QUIZ"
+  ],
+  "author": "Santiago",
+  "license": "Unlicense",
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "fs-extra": "^6.0.1",
+    "archiver": "^3.0.0",
+    "mocha": "^5.2.0",
+    "chai": "^4.1.2",
+    "sequelize": "^4.32.7",
+    "sqlite3": "^4.0.4",
+    "express": "^4.0.0",
+    "zombie": "^6.1.2",
+    "method-override": "^3.0.0"
+  }
+}
