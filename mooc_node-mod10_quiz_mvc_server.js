@@ -33,10 +33,10 @@ sequelize.sync() // Syncronize DB and seed if needed
     if (count===0) {
         return ( 
             quizzes.bulkCreate([
-                { id: 1, question: "Capital of Italy",    answer: "Rome" },
+                { id: 1, question: "Capital of Italy",    answer: "Roma" },
                 { id: 2, question: "Capital of France",   answer: "Paris" },
                 { id: 3, question: "Capital of Spain",    answer: "Madrid" },
-                { id: 4, question: "Capital of Portugal", answer: "Lisbon" }
+                { id: 4, question: "Capital of Portugal", answer: "Lisboa" }
             ])
             .then( c => console.log(`  DB created with ${c.length} elems`))
         )
@@ -96,7 +96,7 @@ const check = (id, msg, response) => `<!-- HTML view -->
     </body>
 </html>`;
 
-const quizForm =(msg, method, action, question, answer) => `<!-- HTML view -->
+const quizForm =(msg, method, action, question, answer, nombreboton) => `<!-- HTML view -->
 <html>
     <head><title>MVC Example</title><meta charset="utf-8"></head> 
     <body>
@@ -105,7 +105,7 @@ const quizForm =(msg, method, action, question, answer) => `<!-- HTML view -->
             ${msg}: <p>
             <input  type="text"  name="question" value="${question}" placeholder="Question" />
             <input  type="text"  name="answer"   value="${answer}"   placeholder="Answer" />
-            <input  type="submit" value="Create"/> <br>
+            <input  type="submit" value="${nombreboton}"/> <br>
         </form>
         </p>
         <a href="/quizzes"><button>Go back</button></a>
@@ -150,20 +150,29 @@ const checkController = (req, res, next) => {
 
 //  GET /quizzes/1/edit
 const editController = (req, res, next) => {
-
-     // .... introducir código
+	let id = Number(req.params.id);
+	quizzes.findById(id)
+    	.then((quiz) => {
+        	res.send(quizForm("Edit Quiz", "post", `/quizzes/${id}/update`, quiz.question, quiz.answer,"Actualizar"));	
+    	})
+    	.catch((error) => `A DB Error has occurred:\n${error}`);
 };
 
 //  PUT /quizzes/1
 const updateController = (req, res, next) => {
-
-     // .... introducir código
+	let {question, answer} = req.body;
+	let id = Number(req.params.id);
+	quizzes.findById(id)
+    	.then((quiz) => {
+        	quiz.update({question, answer}).then((quiz) => res.redirect('/quizzes'))
+	})
+	.catch((error) => `A DB Error has occurred:\n${error}`);
 };
 
 // GET /quizzes/new
 const newController = (req, res, next) => {
 
-    res.send(quizForm("Create new Quiz", "post", "/quizzes", "", ""));
+    res.send(quizForm("Create new Quiz", "post", "/quizzes", "", "","Crear"));
  };
 
 // POST /quizzes
@@ -191,13 +200,17 @@ app.get('/quizzes/:id/play',  playController);
 app.get('/quizzes/:id/check', checkController);
 app.get('/quizzes/new',       newController);
 app.post('/quizzes',          createController);
-
+// Desde aqui Asma
+app.get('/quizzes/:id/edit', editController);
+app.post('/quizzes/:id/update', updateController);
+// fin Asma
+         
     // ..... instalar los MWs asociados a
     //   GET  /quizzes/:id/edit,   PUT  /quizzes/:id y  DELETE  /quizzes/:id
 
 
 app.all('*', (req, res) =>
-    res.send("Error: resource not found or method not supported")
+    res.send("Error: 1 resource not found or method not supported")
 );        
 
 
