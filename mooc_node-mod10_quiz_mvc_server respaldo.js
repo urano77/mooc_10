@@ -56,27 +56,25 @@ const index = (quizzes) => `<!-- HTML view -->
 <html>
     <head><title>MVC Example</title><meta charset="utf-8"></head> 
     <body> 
-        <h1>MVC: Quizzes</h1> 
-	<table> <tr> `
-	+ quizzes.reduce(
-	    (ac, quiz) => ac += 
-	`     <td>   <a href="/quizzes/${quiz.id}/play">${quiz.question}</a> </td>  
-        <td> <a href="/quizzes/${quiz.id}/edit"><button>Edit</button></a> </td> 
-        <td> <form   method="POST"   action="/quizzes/${quiz.id}"> 
+        <h1>MVC: Quizzes</h1>`
++ quizzes.reduce(
+    (ac, quiz) => ac += 
+`       <a href="/quizzes/${quiz.id}/play">${quiz.question}</a>
+        <a href="/quizzes/${quiz.id}/edit"><button>Edit</button></a>
+        <form   method="POST"   action="/quizzes/${quiz.id}"> 
             <input  type="hidden"  name="_method" value="DELETE"  />
             <input  type="submit" value="Delete" onClick="return confirm('Delete: ${quiz.question}')"  /> <br>
-         </form> </td> </tr>
+        </form>
 	<br>\n`, 
     ""
 )
 + `     <p/>
-	</table>
         <a href="/quizzes/new"><button>New Quiz</button></a>
     </body>
 </html>`;
 
 
-const play_original = (id, question, response) => `<!-- HTML view -->
+const play = (id, question, response) => `<!-- HTML view -->
 <html>
     <head><title>MVC Example</title><meta charset="utf-8"></head> 
     <body>
@@ -84,14 +82,13 @@ const play_original = (id, question, response) => `<!-- HTML view -->
         <form   method="get"   action="/quizzes/${id}/check">
             ${question}: <p>
             <input type="text" name="response" value="${response}" placeholder="Answer" />
-            <input type="submit" value="check"/> <br>
+            <input type="submit" value="Play"/> <br>
         </form>
         </p>
         <a href="/quizzes"><button>Go back</button></a>
     </body>
 </html>`;
 
-/*
 const check = (id, msg, response) => `<!-- HTML view -->
 <html>
     <head><title>MVC Example</title><meta charset="utf-8"></head> 
@@ -103,34 +100,6 @@ const check = (id, msg, response) => `<!-- HTML view -->
         <a href="/quizzes/${id}/play?response=${response}"><button>Try again</button></a>
     </body>
 </html>`;
-*/
-
-
-const play = (id, question, response, msg) => `<!-- HTML view -->
-<html>
-	<head><title>MVC Example</title><meta charset="utf-8">
-	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" > </script>
-	<script type="text/javascript">
-		
-	</script>
-  	</head> 
-	<body>
-       		<h1>MVC: Quizzes</h1>
-		<form   method="get"   action="/quizzes/${id}/check">
-            	${question}: <p>
-            	<input type="text" name="response" value="${response}" placeholder="Answer" />
-            	<input type="submit" value="play"/> <br>
-        	</form>
-        	</p>
-		<strong><div id="msg">${msg}</div></strong>
-        	<a href="/quizzes"><button>Go back</button></a>
-	
-  	</body>
-      
-
-</html>`
-
-
 
 const quizForm =(msg, method, action, question, answer, nombreboton) => `<!-- HTML view -->
 <html>
@@ -165,7 +134,7 @@ const playController = (req, res, next) => {
     let response = req.query.response || "";
 
     quizzes.findByPk(id)
-    .then((quiz) => res.send(play(id, quiz.question, response, "")))
+    .then((quiz) => res.send(play(id, quiz.question, response)))
     .catch((error) => `A DB Error has occurred:\n${error}`);
  };
 
@@ -180,8 +149,7 @@ const checkController = (req, res, next) => {
               `Yes, "${response}" is the ${quiz.question}` 
             : `No, "${response}" is not the ${quiz.question}`;
         //return res.send(check(id, msg, response));
-	//return res.send(msg);
-	return res.send(play(id, quiz.question, response, msg));
+	return res.send(msg);
 	
     })
     .catch((error) => `A DB Error has occurred:\n${error}`);
@@ -239,6 +207,7 @@ const destroyController = (req, res, next) => {
  };
 
 
+
    // ROUTER
 
 app.get(['/', '/quizzes'],    indexController);
@@ -250,7 +219,6 @@ app.post('/quizzes',          createController);
 app.get('/quizzes/:id/edit', editController);
 app.put('/quizzes/:id', updateController);
 app.post('/quizzes/:id', destroyController);
-
 
 // fin Asma
          
