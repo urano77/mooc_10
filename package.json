@@ -19,7 +19,7 @@
     "archiver": "^3.0.0",
     "body-parser": "^1.19.0",
     "chai": "^4.1.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "fs-extra": "^6.0.1",
     "method-override": "^3.0.0",
     "mocha": "^5.2.0",
